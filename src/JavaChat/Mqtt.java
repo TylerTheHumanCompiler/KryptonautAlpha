@@ -9,12 +9,10 @@ import com.google.common.base.CharMatcher;
 import org.eclipse.paho.client.mqttv3.*;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.nio.charset.Charset;
-import java.security.SecureRandom;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -25,16 +23,18 @@ public class Mqtt {
 
     private static MqttClient client;
 
-    private static final List<String> contactsOnline = new ArrayList<>();
+    protected static final List<String> contactsOnline = new ArrayList<>();
+    public static final List<String> receivedMessages = new ArrayList<>();
+    protected static String userhashstr;
 
     public static Listen lpcontacts = new Listen();
 
 
 
 
-    Mqtt() throws MqttException, IOException {
-        int userhashint = Cryptor.getFingerprint(1);
-        String fingerprintuser = new Integer(userhashint).toString();
+    Mqtt() throws MqttException, IOException, NoSuchAlgorithmException {
+
+        String fingerprintuser = "delta";
         client = new MqttClient("tcp://iot.eclipse.org:1883", fingerprintuser);
         client.connect();
     }
@@ -42,9 +42,10 @@ public class Mqtt {
 
     public static class Listen {
 
-        private static final List<String> receivedMessages = new ArrayList<>();
+        public static  List<String> receivedMessages2 = new ArrayList<>();
 
         public void subscribe(String topic) throws MqttException {
+
             client.subscribe(topic);
             MqttCallback callback = new MqttCallback() {
                 @Override
@@ -55,8 +56,8 @@ public class Mqtt {
                 @Override
                 public void messageArrived(String topic, MqttMessage message) throws MqttException {
                     String byteload = new String(message.getPayload(), Charset.forName("ASCII"));
-                    if (/*byteload.isEmpty() == true || byteload.matches("") == true || */CharMatcher.ASCII.matchesAllOf(byteload) == false || byteload.startsWith("ERROR")) {} else {
-                        System.out.println("\nreceived < " + topic + "\n---------------------\nMQTT PAYLOAD ARRIVED:\n---------------------\n" + byteload + "\n\n\n\n");
+                    if (byteload.isEmpty() == true || byteload.matches("") == true || CharMatcher.ASCII.matchesAllOf(byteload) == false || byteload.startsWith("ERROR")) {} else {
+                        System.out.println("\nreceived < " + topic + "\nMQTT PAYLOAD ARRIVED:\n********************\n" + byteload.substring(0, 76) + "\n\n");
 
                         synchronized (receivedMessages) {
                             receivedMessages.add(byteload);
@@ -73,23 +74,35 @@ public class Mqtt {
             };
             client.setCallback(callback);
         }
-        public String receive() {
+
+        public static String receive2() {
             List<String> messages = new ArrayList<>();
-            synchronized (receivedMessages) {
-                messages.addAll(receivedMessages);
-                receivedMessages.clear();
+            synchronized (Listen.receivedMessages2) {
+                messages.addAll(Listen.receivedMessages2);
+                Listen.receivedMessages2.clear();
             }
-            String output = "";
+            String output = new String();
             for (String s : messages) {
                 output += s;
             }
             return output;
         }
+
     }
 
 
-
-
+    public static String receive() {
+        List<String> messages = new ArrayList<>();
+        synchronized (receivedMessages) {
+            messages.addAll(receivedMessages);
+            receivedMessages.clear();
+        }
+        String output = new String();
+        for (String s : messages) {
+            output += s;
+        }
+        return output;
+    }
 
 
 
@@ -97,146 +110,50 @@ public class Mqtt {
 
 
     public void Disconnect() throws MqttException {
-        String topic_body = "ch/test/phi/";
-        String topic_ext = "jfx/";
-        client.unsubscribe(topic_body + topic_ext);
+        String topic_body = "cryptonautphi/";
+        client.unsubscribe(topic_body);
         client.disconnect();
     }
 
 
-    public void sendMessage(String output, String topic) throws MqttException {
+    public static void sendMessage(String output, String topic) throws MqttException {
         MqttMessage message = new MqttMessage();
         String payload = output;
-        System.out.println("send > " + topic + "\n----------------\nMQTT SEND MESSAGE:\n----------------\n" + payload + "\n\n\n\n");
+        System.out.println("send > " + topic + "\n\nMQTT SEND MESSAGE:\n****************\n" + payload + "\n\n");
         message.setPayload(payload.getBytes());
         client.publish(topic, message);
         //client.disconnect(); // wenn dieser hier, funzt event handler nicht auf key.Enter event, also nur 1x!
     }
 
-    public void login() throws Exception {
-        int userhashint = Cryptor.getFingerprint(1);
-        String userhashstr = new Integer(userhashint).toString();
-        Listen ulp = new Listen();
-        ulp.subscribe("cryptonautphi/" + userhashstr);
 
-        int max = Cryptor.getLastIndex();
-
-        for(int i = 3; i < max; i++) {
-            int konhashint = Cryptor.getFingerprint(i);
-            String konhashstr = new Integer(konhashint).toString();
-            String topic = new String("cryptonautphi/" + konhashstr);
-            /*
-            int sharedint = userhashint * konhashint;
-            String sharedintstr = new Integer(sharedint).toString();
-            int sharedhash = sharedintstr.hashCode();
-            String listentopic = new String("cryptonautphi/" + Integer.toString(sharedhash) + "/login");
-            Subscribe(listentopic);*/
-            sendMessage(Cryptor.getCipher(i, userhashstr), topic);
-            TimeUnit.MILLISECONDS.sleep(50);
-            String verifycip = ulp.receive();
-            if(verifycip.isEmpty() == false) {
-                String verifymsg = Cryptor.getClrtxt(verifycip);
-                String verifytoken = verifymsg.substring((verifymsg.indexOf("#TOKEN:") + 7));
-                String verifysender = verifymsg.substring(0, verifymsg.indexOf("#TOKEN:"));
-                if (verifytoken.startsWith("VERIFIED:") == false) {
-                    if (konhashstr.matches(verifysender) == false) {
-                        System.out.println("QUEUE ERROR");/*
-                String topic2 = new String("cryptonautphi/" + verifysender);
-                sendMessage(Cryptor.getCipher(i, verifytoken), topic2);*/
-
-                    } else {
-                        String tokenreturn = new String(userhashstr + "#RETURN:" + verifytoken);
-                        sendMessage(Cryptor.getCipher(i, tokenreturn), topic);
-                        System.out.println("Verify Correct");
-                    }
-                }
-                TimeUnit.MILLISECONDS.sleep(50);
-                String confcip = ulp.receive();
-
-                String confmsg = Cryptor.getClrtxt(confcip);
-                String conftoken = confmsg.substring((confmsg.indexOf("#TOKEN:") + 7));
-                String confsender = confmsg.substring(0, confmsg.indexOf("#TOKEN:"));
-                if (conftoken.startsWith("VERIFIED:") == true) {
-                    if (konhashstr.matches(confsender) == false) {
-                        System.out.println("QUEUE ERROR");
-
-                    } else {
-                        String addtolist = new String(Integer.toString(i) + "#TOPIC:" + verifytoken);
-                        synchronized (contactsOnline) {
-                            contactsOnline.add(addtolist);
-                        }
-
-                        lpcontacts.subscribe("cryptonautphi/" + verifytoken + "/");
-                        System.out.println("Verify Correct");
-                    }
-                }
-            }
+    public static void authentifiktor() throws Exception {
+        Thread rl = new RequestListener();
+        rl.start();
+    }
 
 
-        }
-        do {
-            String verifier = ulp.receive();
-            if(verifier.isEmpty() == false) {
-                String verifstr = Cryptor.getClrtxt(verifier);
-                int j;
-                for(int i = 3; i < max; i++) {
-                    int verifhashint = Cryptor.getFingerprint(i);
-                    String verifhashstr = new Integer(verifhashint).toString();
-                    if(verifhashstr.matches(verifstr) == true) {
-                        j = i;
-                        String veritopic = new String("crypronautphi/" + verifstr);
-                        SecureRandom random = new SecureRandom();
-                        String token = new BigInteger(130, random).toString();
-                        String tknmsg = new String(userhashstr + "#TOKEN:" + token);
-                        sendMessage(Cryptor.getCipher(j, tknmsg), veritopic);
-                        TimeUnit.MILLISECONDS.sleep(50);
-                        String cipherrcv = ulp.receive();
-                        String tokenrcv = Cryptor.getClrtxt(cipherrcv);
-                        String tokentoverify = tokenrcv.substring((tokenrcv.indexOf("#RETURN:") + 8));
-                        String tokensender = tokenrcv.substring(0, tokenrcv.indexOf("#RETURN:"));
-                        if(tokensender.matches(verifstr) == false || tokensender.matches(verifhashstr) == false) {
-                            System.out.println("Verify ERROR");
-                        } else {
-                            if(tokentoverify.matches(token) == false) {
-                                System.out.println("TOKEN ERROR");
-                            } else {
-                                String confirmation = new String(userhashstr + "#TOKEN:VERIFIED:" + token);
-                                sendMessage(Cryptor.getCipher(j, confirmation), veritopic);
-                                String addtolist = new String(Integer.toString(j) + "#TOPIC:" + token);
-                                synchronized (contactsOnline) {
-                                    contactsOnline.add(addtolist);
-                                }
-                                lpcontacts.subscribe("cryptonautphi/" + token + "/");
-                            }
-                        }
 
-
-                        break;
-                    }
-                }
-                TimeUnit.MILLISECONDS.sleep(100);
-            } else {
-                TimeUnit.MILLISECONDS.sleep(100);
-            }
-        } while(0 < 1);
+    public static void requestor() throws Exception {
+        Thread t2 = new RequestPusher();
+        t2.start();
     }
 
 
 
 
 public String privateListeners() throws MqttException, InterruptedException, IOException {
-    String requestcipher = lpcontacts.receive();
+    String requestcipher = receive();
     String requesthash = Cryptor.getClrtxt(requestcipher);
     return requesthash;
 
 }
 
 
-protected int getIndexFromHash(String reqhash) throws IOException {
+protected static int getIndexFromHash(String reqhash) throws IOException, NoSuchAlgorithmException {
     int j = 0;
     int max = Cryptor.getLastIndex();
     for (int i = 3; i < max; i++) {
-        if (reqhash.matches(new Integer(Cryptor.getFingerprint(i)).toString()) == true) {
+        if (reqhash.matches(Cryptor.getFingerprint(i)) == true) {
             j = i;
             break;
         }
@@ -245,7 +162,7 @@ protected int getIndexFromHash(String reqhash) throws IOException {
 }
 
 
-protected String matchToken(int j) {
+protected static String matchToken(int j) {
     String indexandtoken = "";
         synchronized (contactsOnline) {
             int snr = contactsOnline.size();

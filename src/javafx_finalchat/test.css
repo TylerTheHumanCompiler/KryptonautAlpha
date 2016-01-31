@@ -1,0 +1,262 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 28.12.2015, 23:21:06
+    Author     : fpiplip
+*/
+
+/*TABPANES*/
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-opacity: 0;
+    
+    
+}
+#tab-pane .tab-header-area .tab-header-background {
+    -fx-opacity: 0;
+    -fx-background-color: #404040;
+    -fx-alignment: center-left;
+   
+}
+#tab-pane > .tab-header-area > .headers-region {
+    
+}
+
+#tab-pane .tab-down-button:expanded {
+    -fx-opacity: 0;
+    -fx-background-color: #404040;
+   
+}
+
+.tab-down-button
+{ 
+-fx-background-color: transparent;
+/*-fx-padding: 0.0em 0.416667em 0.0em 0.416667em; /* 0 5 0 5 */
+}
+.tab-down-button:hover 
+{
+    
+-fx-background-color: black, -fx-body-color;
+-fx-color: black, -fx-hover-base;
+}
+.tab-down-button .arrow 
+{
+-fx-background-color: -fx-mark-highlight-color, -fx-mark-color;
+-fx-background-insets: 1 0 -1 0, 0;
+-fx-padding: 0.238083em 0.416667em 0.238083em 0.416667em; /* 2.857 5 2.857 5 */
+/*-fx-shape: "M 0 0 H 7 L 3.5 4 z";*/
+}
+
+.tab-pane.floating *.tab-header-background {
+-fx-background-color: null;
+}
+.tab-pane.floating *.tab-header-area 
+{
+-fx-background-color: null;
+}
+.tab-pane.floating *.tab-content-area 
+{
+-fx-background-color: -fx-tab-border-color, -fx-control-inner-background;
+-fx-background-insets: 0, 1;
+-fx-background-radius: 5, 4;
+}
+.tab-pane.floating *.tab 
+{
+-fx-background-color: -fx-tab-border-color, -fx-inner-border, -fx-body-color;
+-fx-background-insets: 0, 1, 2;
+-fx-background-radius: 5 5 0 0, 4 4 0 0, 3 3 0 0;
+}
+.tab-pane.floating *.tab:selected 
+{
+-fx-background-color: -fx-tab-border-color, -fx-control-inner-background;
+-fx-background-insets: 0 0 -1 0, 1 1 -1 1;
+-fx-background-radius: 5 5 0 0, 4 4 0 0;
+}
+
+
+/*BUTTONS*/
+#dark-blue {
+    -fx-background-color: 
+        #090a0c,
+        linear-gradient(black 0%, #1f2429 20%, #191d22 100%),
+        linear-gradient(#20262b, #191d22),
+        radial-gradient(center 50% 0%, radius 100%, rgba(114,131,148,0.9), rgba(255,255,255,0));
+    -fx-background-radius: 5,4,3,5;
+    -fx-background-insets: 0,1,2,0;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+    -fx-font-family: "Arial";
+    -fx-text-fill: linear-gradient(white, #d0d0d0);
+    -fx-font-size: 12px;
+    /*-fx-padding: 10 20 10 20; grösse des buttons */ 
+}
+#dark-blue Text {
+    -fx-effect: dropshadow( one-pass-box , rgba(0,0,0,0.9) , 1, 0.0 , 0 , 1 );
+}
+#dark-blue:hover{
+    -fx-border-color: lightgoldenrodyellow;
+    -fx-border-radius:5;
+}
+#black2 {
+    -fx-background-color:
+        /*linear-gradient(#f0ff35, #a9ff00),*/
+        radial-gradient(center 50% -40%, radius 200%, #333333 45%, #000000 50%);
+    -fx-border-color: white;
+    -fx-background-radius: 6, 5;
+    -fx-background-insets: 0, 1;
+    /*-fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.4) , 5, 0.0 , 0 , 1 );*/
+    -fx-text-fill: #395306;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+    -fx-opacity: 0.9;
+}
+#black2:hover{
+-fx-border-color: lightgoldenrodyellow;
+-fx-border-radius:5;
+}
+#black2 Text {
+    -fx-effect: dropshadow( one-pass-box , rgba(0,0,0,0.9) , 1, 0.0 , 0 , 1 );
+}
+/*#textField {
+  -fx-background-image:url('smileys/1.png');
+  -fx-background-repeat: no-repeat;
+  -fx-background-position: right center;
+  -fx-font-size: 20;
+} */
+
+
+/*COLOR-PICKER*/
+.color-picker {
+    -fx-background-color: #669999; 
+    -fx-background-radius: 0 15 15 0; 
+}
+
+#color-picker {
+     -fx-background-color:
+        /*linear-gradient(#f0ff35, #a9ff00),*/
+        radial-gradient(center 50% -40%, radius 200%, #333333 45%, #000000 50%);
+    -fx-border-color: white;
+    -fx-background-radius: 6, 5;
+    -fx-background-insets: 0, 1;
+    /*-fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.4) , 5, 0.0 , 0 , 1 );*/
+    -fx-text-fill: #395306;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow( three-pass-box , rgba(255,255,255,0.2) , 1, 0.0 , 0 , 1);
+    -fx-opacity: 0.9;
+   
+}
+#color-picker .color-picker-label .text {
+    -fx-fill: transparent;
+     /*-fx-color-label-visible: false;*/
+}
+#color-picker .arrow {
+    -fx-fill: white;
+    -fx-background-color: black;
+    -fx-border-color: white;
+}
+
+
+/*SLIDER*/
+#slider {
+    -fx-skin: "com.sun.javafx.scene.control.skin.SliderSkin";
+ 
+}
+
+#slider .thumb {
+    -fx-background-color: 
+        derive(-fx-color,-36%),
+        derive(-fx-color,73%),
+        linear-gradient(to bottom, derive(-fx-color,-19%),derive(-fx-color,61%));
+    -fx-background-insets: 0, 1, 2;
+    -fx-background-radius: 1.0em; /* makes sure this remains circular */
+    -fx-padding: 0.583333em; /* 7 */
+    -fx-control-inner-color: red;
+}
+
+.slider:focused .thumb {
+    -fx-color:  -fx-focused-base;
+    -fx-background-color:
+        -fx-focus-color,
+        derive(-fx-color,-36%),
+        derive(-fx-color,73%),
+        linear-gradient(to bottom, derive(-fx-color,-19%),derive(-fx-color,61%));
+    -fx-background-insets: -1.4, 0, 1, 2;
+    -fx-background-radius: 1.0em; /* makes sure this remains circular */
+}
+
+#slider .thumb:hover {
+    -fx-color: -fx-hover-base;
+}
+
+/* Uncomment when RT-10521 is fixed.
+.slider .thumb:pressed {
+    -fx-color: -fx-pressed-base;
+}
+*/
+
+#slider .track {
+    -fx-background-color: 
+        -fx-shadow-highlight-color,
+        derive(-fx-color,-22%),
+        linear-gradient(to bottom, derive(-fx-color,-15.5%), derive(-fx-color,34%) 30%, derive(-fx-color,68%));
+    -fx-background-insets: 1 0 -1 0, 0, 1;
+    -fx-background-radius: 2.5, 2.5, 1.5;
+    -fx-padding: 0.208333em; /* 2.5 */
+}
+
+#slider:vertical .track {
+    -fx-background-color:
+        -fx-shadow-highlight-color,
+        derive(-fx-color,-22%),
+        linear-gradient(to right, derive(-fx-color,-15.5%), derive(-fx-color,34%) 30%, derive(-fx-color,68%));
+    -fx-background-insets: 0 -1 0 1, 0, 1;
+}
+
+.slider .axis {
+    -fx-tick-mark-stroke: ladder(-fx-background, derive(-fx-background,30%) 40%, derive(-fx-background,-30%) 41%);
+    -fx-tick-label-font: 0.833333em System; 
+    -fx-tick-label-fill: -fx-text-background-color;
+}
+
+.slider:disabled {
+    -fx-opacity: -fx-disabled-opacity;
+}
+    
+    
+/*POPOVER*/
+/*.popover > .content {
+    -fx-background-color: green;
+  -fx-stroke: linear-gradient(to bottom, rgba(0,0,0, .3), rgba(0, 0, 0, .7));
+    -fx-stroke-width: 0.5;
+   /* -fx-fill: rgba(60 , 10, 70, .95); */
+  /* -fx-fill: black;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,.2), 10.0, 0.5, 2.0, 2.0);  
+}*/
+  .popover > .content {
+  -fx-background-color: 
+        /*linear-gradient(#f0ff35, #a9ff00),*/
+        radial-gradient(center 50% -40%, radius 200%, #333333 45%, #000000 50%);
+    -fx-border-color: white;
+    -fx-background-radius: 6, 5;
+    -fx-background-insets: 0, 1;
+    /*-fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.4) , 5, 0.0 , 0 , 1 );*/
+    -fx-text-fill: #395306;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow( three-pass-box , rgba(255,255,255,0.2) , 1, 0.0 , 0 , 1);
+    -fx-opacity: 0.9;
+}
+
+
+.popover > .border {
+    
+    -fx-stroke: linear-gradient(to bottom, rgba(0,0,0, .3), rgba(0, 0, 0, .7));
+    -fx-stroke-width: 0.5;
+   /* -fx-fill: rgba(60 , 10, 70, .95); */
+   -fx-fill: black;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,.2), 10.0, 0.5, 2.0, 2.0);
+}
+
+
+
